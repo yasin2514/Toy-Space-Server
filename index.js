@@ -30,6 +30,16 @@ async function run() {
     try {
         client.connect();
         const toyCollection = client.db('ToyDB').collection('toys');
+        const galleryCollection = client.db('ToyDB').collection('gallery');
+
+        // galleryCollection
+        app.get('/gallery', async (req, res) => {
+            const result = await galleryCollection.find().toArray();
+            res.send(result);
+        })
+
+        
+        // toyCollection
 
         app.get('/toys', async (req, res) => {
             const result = await toyCollection.find().toArray();

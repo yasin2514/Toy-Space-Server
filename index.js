@@ -53,6 +53,17 @@ async function run() {
             res.send(result);
         })
 
+        app.get('/category', async (req, res) => {
+            let query = {};
+            if (req.query.category) {
+                query = { category: req.query.category }
+            }
+            console.log(query)
+            const result = await toyCollection.find(query).toArray();
+            res.send(result);
+
+        })
+
         app.post('/toys', async (req, res) => {
             const toy = req.body;
             const result = await toyCollection.insertOne(toy);
@@ -91,7 +102,6 @@ async function run() {
             if (req.query.email) {
                 query = { email: req.query.email }
             }
-            console.log(query)
             const result = await toyCollection.find(query).toArray();
             res.send(result);
         })

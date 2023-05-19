@@ -38,7 +38,7 @@ async function run() {
             res.send(result);
         })
 
-        
+
         // toyCollection
 
         app.get('/toys', async (req, res) => {
@@ -50,6 +50,16 @@ async function run() {
             const id = req.params.id;
             const query = { _id: new ObjectId(id) };
             const result = await toyCollection.findOne(query);
+            res.send(result);
+        })
+
+        app.get('/myToys', async (req, res) => {
+            let query = {};
+            if (req.query.email) {
+                query = { email: req.query.email }
+            }
+            console.log(query)
+            const result = await toyCollection.find(query).toArray();
             res.send(result);
         })
 

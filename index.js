@@ -29,15 +29,33 @@ const client = new MongoClient(uri, {
 async function run() {
     try {
         client.connect();
-        const toyCollection = client.db('ToyDB').collection('toys');
         const galleryCollection = client.db('ToyDB').collection('gallery');
+        const toyCollection = client.db('ToyDB').collection('toys');
+
+        // toy collection indexing
+        const indexKeys = { toyName: 1 }
+        const indexOptions = { name: "toyName" }
+        const result = await toyCollection.createIndex(indexKeys, indexOptions);
+
+        // search price
+        app.get('/toySearch/:text', async (req, res) => {
+            const searchText = req.params.text;
+            console.log(searchText);
+            const result = await toyCollection.find({
+                $or: [
+                    { toyName: { $regex: searchText, $options: 'i' } }
+                ]
+            }).toArray();
+            console.log(result);
+            res.send(result)
+        })
+
 
         // galleryCollection
         app.get('/gallery', async (req, res) => {
             const result = await galleryCollection.find().toArray();
             res.send(result);
         })
-
 
         // toyCollection
 
@@ -83,7 +101,7 @@ async function run() {
             const result = await toyCollection.deleteOne(query);
             res.send(result);
         })
-        
+
         // category 
         app.get('/category', async (req, res) => {
             let query = {};
@@ -105,6 +123,8 @@ async function run() {
             const result = await toyCollection.find(query).toArray();
             res.send(result);
         })
+
+
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
         console.log("Pinged your deployment. You successfully connected to MongoDB!");

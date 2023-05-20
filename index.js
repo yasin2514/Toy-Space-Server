@@ -40,18 +40,26 @@ async function run() {
         // search price
         app.get('/toySearch/:text', async (req, res) => {
             const searchText = req.params.text;
-            console.log(searchText);
             const result = await toyCollection.find({
                 $or: [
                     { toyName: { $regex: searchText, $options: 'i' } }
                 ]
             }).toArray();
-            console.log(result);
             res.send(result)
         })
 
         // sort data
-        app.get('/myToysAscending/:')
+        // ascending order
+        app.get('/myToysAscending/:email', async (req, res) => {
+            const result = await toyCollection.find({ email: req.params.email }).sort({ price: 1 }).toArray();
+            res.send(result);
+        })
+        
+        // descending order
+        app.get('/myToysDescending/:email', async (req, res) => {
+            const result = await toyCollection.find({ email: req.params.email }).sort({ price: -1 }).toArray();
+            res.send(result);
+        })
 
         // galleryCollection
         app.get('/gallery', async (req, res) => {

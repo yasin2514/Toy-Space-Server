@@ -50,6 +50,8 @@ async function run() {
             res.send(result)
         })
 
+        // sort data
+        app.get('/myToysAscending/:')
 
         // galleryCollection
         app.get('/gallery', async (req, res) => {
@@ -60,7 +62,8 @@ async function run() {
         // toyCollection
 
         app.get('/toys', async (req, res) => {
-            const result = await toyCollection.find().toArray();
+            const limit = parseInt(req.query.limit);
+            const result = await toyCollection.find().limit(limit).toArray();
             res.send(result);
         })
 
